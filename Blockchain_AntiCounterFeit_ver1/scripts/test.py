@@ -84,8 +84,9 @@ def main():
     else:
         print("goods")
     contracts.transfer(accounts[4], "0003", "retailer")
-    tx = contracts.getItemById("0003")
-    # print(tx.return_value)
+    # tx = contracts.getItemById("0003")
+    tx = contracts.getTrackById("0003")
+    print(tx.return_value)
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,

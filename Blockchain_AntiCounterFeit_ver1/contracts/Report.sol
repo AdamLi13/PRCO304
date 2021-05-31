@@ -11,6 +11,8 @@ library Things{
         string ownerName; 
         string ownerRole;
         string customer; 
+        address [] track;
+        string [] track_role;
         address owner; 
         bool flag;
     }
@@ -81,6 +83,8 @@ contract Reports{
         id2item[id].ownerName = holder.name; 
         id2item[id].ownerRole = role; 
         id2item[id].owner = send; 
+        id2item[id].track.push(send);
+        id2item[id].track_role.push(role);
         return true;
     }
 
@@ -98,6 +102,8 @@ contract Reports{
         id2item[id].ownerName = holder.name; 
         id2item[id].ownerRole = role; 
         id2item[id].owner = send; 
+        id2item[id].track.push(send);
+        id2item[id].track_role.push(role);
         return true;
     }
 
@@ -108,6 +114,27 @@ contract Reports{
         }
         Things.Items memory item = id2item[id];
         return (true, item.id, item.name, item.creator, item.ownerName, item.ownerRole);
+    }
+
+    function getTrackById(string memory id) public returns (bool, string memory, string memory){
+        uint i;
+        string memory ret = "";
+        string memory marks = " -> ";
+        if(unique(id) == false){
+            return (false, ret, ret);
+        }
+        Things.Items memory item = id2item[id];
+        for(i=0; i < item.track.length - 1; i++){
+            string memory role = item.track_role[i];
+            address send = item.track[i];
+            Things.User memory holder = register[role][send]; 
+            ret = string(abi.encodePacked(ret, holder.name, marks));
+        }
+        string memory role = item.track_role[i];
+        address send = item.track[i];
+        Things.User memory holder = register[role][send];
+        ret = string(abi.encodePacked(ret, holder.name));
+        return (true, ret, role);
     }
 
     function checkFake(string memory id) public returns (bool){
